@@ -121,3 +121,24 @@ Table1 = {'Ticker' : tickers_list ,
 df1 = pd.DataFrame(Table1)
 
 ##print(df1['Portfolio Weight Equally Weighted'])
+
+
+# Table 2 
+
+#Correlation Against ETF
+Data10y = yf.download(tickers_list + etf, period='10y')['Adj Close'].pct_change()
+Data10y = Data10y.drop(Data10y.index[0]) #Removing Nan Values (https://pandas.pydata.org/pandas-docs/version/1.3.3/user_guide/missing_data.html)
+
+correlation_etf = []
+
+for i in etf:# Use i instead of etf
+    Data10y['Percent Change'] = Data10y[tickers_list + [i]].sum(axis=1)  
+    correlation = Data10y[i].corr(Data10y['Percent Change'])  #(https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html)
+    correlation_etf.append(round(correlation, 2))
+
+Table2 ={'Tickers': etf,
+         'Correlation against etf':correlation_etf}
+
+df2=pd.DataFrame(Table2)
+
+print(df2)
