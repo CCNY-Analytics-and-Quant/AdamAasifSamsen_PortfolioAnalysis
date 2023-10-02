@@ -1,7 +1,10 @@
 import pandas as pd 
 import yfinance as yf
 import math
-import numpy as np 
+import numpy as np ##(https://numpy.org/doc/stable/user/absolute_beginners.html)
+import matplotlib as mlp 
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 #List of stocks/etfs to be used 
 tickers_list = ['CRM', 'NVDA', 'ADBE', 'GS', 'PG', 'SMCI', 'NEE']
@@ -137,6 +140,7 @@ portfolio_returns1y = returns_df1y[tickers_list].sum(axis=1)
 etf_returns1y = returns_df1y[etf].sum(axis=1)
 
 # Correlation Against ETF
+##(https://www.investopedia.com/terms/c/correlation.asp)
 correlation_etf = []
 
 for i in etf:
@@ -145,6 +149,7 @@ for i in etf:
 
 
 ##(https://www.geeksforgeeks.org/python-numpy-cov-function/)
+##(https://www.investopedia.com/ask/answers/041315/how-covariance-used-portfolio-theory.asp)
 # Covariance Against ETF
 Covariance_etf =[]
 
@@ -153,7 +158,7 @@ for i in etf:
     Covariance_etf.append(round(covariance, 6))
 
 
-#tracking error
+#tracking error (https://www.investopedia.com/terms/t/trackingerror.asp#:~:text=Given%20a%20sequence%20of%20returns,and%20B%20is%20benchmark%20return.)
 tracking_error = []
 for i in etf:
     trackingerr = portfolio_returns - returns_df[i] 
@@ -174,3 +179,4 @@ for i in etf:
 Annualized_Volatility_spread = []
 
 
+#(https://www.geeksforgeeks.org/plotting-correlation-matrix-using-python/)
