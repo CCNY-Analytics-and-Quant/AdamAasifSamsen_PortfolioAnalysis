@@ -190,12 +190,6 @@ for i in range(len(etf)):
     spread = annualized_volatility_b - Annualized_Volatility_etf[i]
     Annualized_Volatility_spread.append(round(spread, 2))
 
-#Correlation Matrix(https://www.geeksforgeeks.org/create-a-correlation-matrix-using-python/)
-
-dataplot = sns.heatmap(returns_df, annot=True, cmap='vlag')
-
-
-
 Table2 ={'Tickers': etf,
          'Correlation against etf':correlation_etf,
          'Covariance against etf': Covariance_etf,
@@ -206,7 +200,13 @@ Table2 ={'Tickers': etf,
 
 df2=pd.DataFrame(Table2)
 
-print(df2)
+
+#Correlation Matrix(https://www.geeksforgeeks.org/create-a-correlation-matrix-using-python/)
+dataplot = sns.heatmap(returns_df.corr(), annot=True, cmap='vlag')
+plt.show()
+
+
+
 plt.show()
 
 
