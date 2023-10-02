@@ -124,21 +124,53 @@ df1 = pd.DataFrame(Table1)
 
 
 # Table 2 
+# Table 2 
+# Data Pulls
+Data10y = yf.download(tickers_list + etf, period='10y')['Adj Close']
+returns_df = Data10y.pct_change().dropna()
+portfolio_returns = returns_df[tickers_list].sum(axis=1)
 
-#Correlation Against ETF
-Data10y = yf.download(tickers_list + etf, period='10y')['Adj Close'].pct_change()
-Data10y = Data10y.drop(Data10y.index[0]) #Removing Nan Values (https://pandas.pydata.org/pandas-docs/version/1.3.3/user_guide/missing_data.html)
+#Data pull for Sharpe Ratio
+Data1y = yf.download(tickers_list + etf, period='1y')['Adj Close']
+returns_df1y = Data1y.pct_change().dropna()
+portfolio_returns1y = returns_df1y[tickers_list].sum(axis=1)
+etf_returns1y = returns_df1y[etf].sum(axis=1)
 
+# Correlation Against ETF
 correlation_etf = []
 
-for i in etf:# Use i instead of etf
-    Data10y['Percent Change'] = Data10y[tickers_list + [i]].sum(axis=1)  
-    correlation = Data10y[i].corr(Data10y['Percent Change'])  #(https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.corr.html)
+for i in etf:
+    correlation = portfolio_returns.corr(returns_df[i])
     correlation_etf.append(round(correlation, 2))
 
-Table2 ={'Tickers': etf,
-         'Correlation against etf':correlation_etf}
 
-df2=pd.DataFrame(Table2)
+##(https://www.geeksforgeeks.org/python-numpy-cov-function/)
+# Covariance Against ETF
+Covariance_etf =[]
 
-print(df2)
+for i in etf:
+    covariance = portfolio_returns.cov(returns_df[i])
+    Covariance_etf.append(round(covariance, 6))
+
+
+#tracking error
+tracking_error = []
+for i in etf:
+    trackingerr = portfolio_returns - returns_df[i] 
+    trackingerrstd = trackingerr.std()*100
+    tracking_error.append(round(trackingerrstd,2))
+
+sharpe_ratio = []
+# Portfolio return, risk-free rate, and excess return
+risk_free_rate = 0.0459
+
+for i in etf:
+    excess_return = portfolio_returns1y - risk_free_rate
+    std_dev_excess_return = excess_return.std()
+    sharpe_ratio_calc = excess_return.mean() / std_dev_excess_return
+    sharpe_ratio.append(sharpe_ratio_calc)
+
+
+Annualized_Volatility_spread = []
+
+
