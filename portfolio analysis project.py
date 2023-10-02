@@ -174,9 +174,41 @@ for i in etf:
     std_dev_excess_return = excess_return.std()
     sharpe_ratio_calc = excess_return.mean() / std_dev_excess_return
     sharpe_ratio.append(sharpe_ratio_calc)
+Annualized_Volatility_etf = []
 
+for i in etf:
+    etf_returns = returns_df[i]
+    etf_volatility_raw = etf_returns.std() * np.sqrt(252) * 100
+    etf_annualized_volatility = round(etf_volatility_raw, 2)
+    Annualized_Volatility_etf.append(etf_annualized_volatility)
 
+# Calculate the annualized volatility spread
 Annualized_Volatility_spread = []
+
+for i in range(len(etf)):
+    annualized_volatility_b = annualized_volatility.std()
+    spread = annualized_volatility_b - Annualized_Volatility_etf[i]
+    Annualized_Volatility_spread.append(round(spread, 2))
+
+#Correlation Matrix(https://www.geeksforgeeks.org/create-a-correlation-matrix-using-python/)
+
+dataplot = sns.heatmap(returns_df, annot=True, cmap='vlag')
+
+
+
+Table2 ={'Tickers': etf,
+         'Correlation against etf':correlation_etf,
+         'Covariance against etf': Covariance_etf,
+         'Tracking Error' : tracking_error,
+         'Sharpe Ratio' : sharpe_ratio,
+         'Annualized Volatility Spread': Annualized_Volatility_spread,
+         }
+
+df2=pd.DataFrame(Table2)
+
+print(df2)
+plt.show()
+
 
 
 #(https://www.geeksforgeeks.org/plotting-correlation-matrix-using-python/)
