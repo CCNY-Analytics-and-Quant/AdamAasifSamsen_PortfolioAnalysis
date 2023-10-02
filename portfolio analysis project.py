@@ -1,10 +1,11 @@
 import pandas as pd 
 import yfinance as yf
 import math
-import numpy as np ##(https://numpy.org/doc/stable/user/absolute_beginners.html)
-import matplotlib as mlp 
-import matplotlib.pyplot as plt
+import numpy as np 
+import matplotlib as mlp
+import matplotlib.pyplot as plt 
 import seaborn as sns
+
 
 #List of stocks/etfs to be used 
 tickers_list = ['CRM', 'NVDA', 'ADBE', 'GS', 'PG', 'SMCI', 'NEE']
@@ -127,7 +128,6 @@ df1 = pd.DataFrame(Table1)
 
 
 # Table 2 
-# Table 2 
 # Data Pulls
 Data10y = yf.download(tickers_list + etf, period='10y')['Adj Close']
 returns_df = Data10y.pct_change().dropna()
@@ -140,7 +140,6 @@ portfolio_returns1y = returns_df1y[tickers_list].sum(axis=1)
 etf_returns1y = returns_df1y[etf].sum(axis=1)
 
 # Correlation Against ETF
-##(https://www.investopedia.com/terms/c/correlation.asp)
 correlation_etf = []
 
 for i in etf:
@@ -149,7 +148,6 @@ for i in etf:
 
 
 ##(https://www.geeksforgeeks.org/python-numpy-cov-function/)
-##(https://www.investopedia.com/ask/answers/041315/how-covariance-used-portfolio-theory.asp)
 # Covariance Against ETF
 Covariance_etf =[]
 
@@ -158,7 +156,7 @@ for i in etf:
     Covariance_etf.append(round(covariance, 6))
 
 
-#tracking error (https://www.investopedia.com/terms/t/trackingerror.asp#:~:text=Given%20a%20sequence%20of%20returns,and%20B%20is%20benchmark%20return.)
+#tracking error
 tracking_error = []
 for i in etf:
     trackingerr = portfolio_returns - returns_df[i] 
@@ -174,6 +172,8 @@ for i in etf:
     std_dev_excess_return = excess_return.std()
     sharpe_ratio_calc = excess_return.mean() / std_dev_excess_return
     sharpe_ratio.append(sharpe_ratio_calc)
+
+
 Annualized_Volatility_etf = []
 
 for i in etf:
@@ -200,15 +200,18 @@ Table2 ={'Tickers': etf,
 
 df2=pd.DataFrame(Table2)
 
+##print(df2)
+
 
 #Correlation Matrix(https://www.geeksforgeeks.org/create-a-correlation-matrix-using-python/)
-dataplot = sns.heatmap(returns_df.corr(), annot=True, cmap='vlag')
+
+# Calculate the correlation matrix
+correlation_matrix = returns_df.corr()
+
+# Select relevant correlations for the equal-weighted portfolio, 3 ETFs, and 7 stocks
+selected_correlations = correlation_matrix.loc[tickers_list + etf, tickers_list + etf]
+plt.title('Correlation Heatmap')
+
+dataplot = sns.heatmap(selected_correlations, annot=True, cmap='vlag')
 plt.show()
 
-
-
-plt.show()
-
-
-
-#(https://www.geeksforgeeks.org/plotting-correlation-matrix-using-python/)
